@@ -275,10 +275,12 @@ void set_wd_log_g(void (*wd_func)(const char *))
 {
     wd_log_fcn_g = wd_func;
 }
+
 void set_wd_log_y(void (*wd_func)(const char *))
 {
     wd_log_fcn_y = wd_func;
 }
+
 void set_wd_log_r(void (*wd_func)(const char *))
 {
     wd_log_fcn_r = wd_func;

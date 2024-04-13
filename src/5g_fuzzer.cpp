@@ -682,6 +682,7 @@ void save_packet(uint8_t *pkt_buf, uint16_t pkt_len, bool fuzzed = false, bool d
             WSPacketLogger.write(pcap_buffer.header(), pcap_buffer.header_size() + pkt_len);
     }
 }
+
 bool check_msg_list(vector<string> nextStateLst, string summary)
 {
 
@@ -1284,7 +1285,6 @@ void handler_mac(wd_t *wd, WDEventQueue<pkt_evt_t> &PacketQueue, SHMDriver &OAIC
             }
             case T_ENB_MAC_UE_DL_SIB:
             case W_GNB_MAC_UE_DL_SIB:
-
                 profiling_timer_start(0);
 
                 if (StateMachine.config.options.skip_packet_processing)
@@ -1839,10 +1839,23 @@ int main(int argc, char **argv)
     WDFitness.init(StateMachine.TotalStatesLayers(), 5);
 
     // Configure Main Packet Handlers
+
+    //     bool AddPacketHandlerWithDriver(T &DriverPtr,
+                                    // WD_HANDLER_PKT_DRV_TYPE fcn,
+                                    // uint8_t direction = WD_DIR_ANY,
+                                    // wd_dissection_mode dissection_mode = WD_MODE_NORMAL,
+                                    // bool realtime = true,
+                                    // const char *proto_name = NULL,
+                                    // int module_group = 0)
+
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(Open5GSNAS_DL, handler_nas, WD_DIR_DL, WD_MODE_FAST, false, "proto:nas-5gs");
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(Open5GSNAS_UL, handler_nas, WD_DIR_UL, WD_MODE_FAST, false, "proto:nas-5gs");
+
+    
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(OAICommPDCP_DL, handler_pdcp, WD_DIR_DL, WD_MODE_FAST, true, "proto:pdcp-nr-framed");
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(OAICommPDCP_UL, handler_pdcp, WD_DIR_UL, WD_MODE_FAST, true, "proto:pdcp-nr-framed");
+
+
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(OAICommMAC_DL, handler_mac, WD_DIR_DL, WD_MODE_NORMAL, true);
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(OAICommMAC_DL_BCCH, handler_mac, WD_DIR_DL, WD_MODE_FAST, true);
     PacketHandler.AddPacketHandlerWithDriver<SHMDriver>(OAICommMAC_UL, handler_mac, WD_DIR_UL, WD_MODE_FAST, false);
